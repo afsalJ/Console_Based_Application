@@ -25,14 +25,26 @@ public class AutomaticTellerMachine {
 					}
 					else
 					{
+						Bank b = admin.getBanks().get(bank_name);
 						System.out.print("Enter ACCOUNT NUMBER : ");
 						String acc_no=scanner.next();
+						if(b.getCustomer().containsKey(acc_no)){
+							if(b.getCustomer().get(acc_no).pin==0){
+								System.out.println("SET YOUR NEW PIN!");
+								System.out.print("ENTER PIN : ");
+								int set_pin = scanner.nextInt();
+								System.out.print("ENTER CONFIRM PIN : ");
+								int confirm_pin  = scanner.nextInt();
+								b.getCustomer().get(acc_no).generatePin(set_pin, confirm_pin);
+								break;
+							}
+						}
 						System.out.print("ENTER PASSWORD : ");
 						int user_password=scanner.nextInt();
-						Bank b = admin.getBanks().get(bank_name);
+						
 						if(b.validate(acc_no, user_password)) { // checks for ac_nunmber and password
 							Customer c = b.getCustomer().get(acc_no);
-							System.out.println("SELECT \n1.WITHDRAW\n2.DEPOSIT\n3.BALANCE ENQUIRY\n4.CHANGE PIN\n5.MINI STATEMENT\n6.CANCEL\n");
+							System.out.println("SELECT \n1.WITHDRAW\n2.DEPOSIT\n3.BALANCE ENQUIRY\n4.CHANGE PIN\n5.MINI STATEMEN\n6.TRANSFER AMOUNT\n7.CANCEL\n");
 							int option=scanner.nextInt();
 							switch (option) 
 							{
@@ -76,6 +88,23 @@ public class AutomaticTellerMachine {
 								}
 								case 6:
 								{
+									//transfer amount
+									System.out.print("ACCOUNT NUMBER (RECIEVER) : ");
+									String ac_no_reciever = scanner.next();
+									if(b.getCustomer().containsKey(ac_no_reciever)){
+										System.out.print("ENTER THE AMOUNT : ");
+										long amt = scanner.nextLong();
+										Customer c2=b.getCustomer().get(ac_no_reciever);
+										c.Transfer(amt, c2);
+									}
+									else{
+										System.out.println("ACCOUNT DOESN'T EXIST");
+									}
+									break;
+								}
+								case 7:
+								{
+									//cancel
 									System.out.println("TRANSACTION CANCELLED!");
 									break inner;
 								}
